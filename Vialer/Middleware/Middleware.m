@@ -236,13 +236,13 @@ NSString * const MiddlewareRegistrationOnOtherDeviceNotification = @"MiddlewareR
                     // Retry to call the function.
                     [self sentAPNSToken:apnsToken withCompletion:completion];
                 } else {
+                    // Sending token failed because device isn't online. Register failed registration, but keep
+                    // SIP calling enabled.
+
                     // Reset the retry count back to 0.
                     self.retryCount = 0;
 
-                    // Disable SIP to give some feedback to the user.
-                    self.systemUser.sipEnabled = NO;
-
-                    // And log the problem to track failures.
+                    // Log the problem to track failures.
                     [VialerGAITracker registrationFailedWithMiddleWareException];
                     DDLogError(@"Device registration with Middleware failed. %@", error);
 
@@ -255,7 +255,7 @@ NSString * const MiddlewareRegistrationOnOtherDeviceNotification = @"MiddlewareR
                 self.retryCount = 0;
 
                 // Display debug message the registration has been successfull.
-                DDLogDebug(@"Middleware registration successfull");
+                DDLogDebug(@"Middleware registration successfull.");
                 if (completion) {
                     completion(nil);
                 }
